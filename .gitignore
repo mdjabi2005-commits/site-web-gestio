@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Code source (has its own repo)
+code-source/
+
 # Build output (generated during deployment, not needed in repo)
 # Keep only the final built files
 
