@@ -1,2 +1,18 @@
-/node_modules
+# Dependencies
+node_modules/
+
+# Build output (generated during deployment, not needed in repo)
+# Keep only the final built files
+
+# Environment
 .env
+.env.local
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
