@@ -1,6 +1,11 @@
 import { Download, Play } from "lucide-react";
+import type { TabId } from "./MainNavigation";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onTabChange: (tab: TabId) => void;
+}
+
+const HeroSection = ({ onTabChange }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       <video
@@ -30,20 +35,20 @@ const HeroSection = () => {
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center">
-          <a
-            href="#telecharger"
-            className="inline-flex items-center gap-2.5 bg-gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline"
+          <button
+            onClick={() => onTabChange("download")}
+            className="inline-flex items-center gap-2.5 bg-gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all cursor-pointer"
           >
             <Download className="w-5 h-5" />
             Télécharger gratuitement
-          </a>
-          <a
-            href="#fonctionnalites"
-            className="inline-flex items-center gap-2.5 bg-card text-foreground border border-border px-8 py-4 rounded-xl font-semibold hover:bg-muted hover:border-primary transition-all no-underline"
+          </button>
+          <button
+            onClick={() => document.getElementById("fonctionnalites")?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex items-center gap-2.5 bg-card text-foreground border border-border px-8 py-4 rounded-xl font-semibold hover:bg-muted hover:border-primary transition-all cursor-pointer"
           >
             <Play className="w-5 h-5" />
             Découvrir
-          </a>
+          </button>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-center gap-12 sm:gap-12 mt-16 pt-12 border-t border-border">

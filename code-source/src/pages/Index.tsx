@@ -19,7 +19,7 @@ const Index = () => {
       case "home":
         return (
           <>
-            <HeroSection />
+            <HeroSection onTabChange={setActiveTab} />
             <FeaturesSection />
             <PrivacySection />
             <ScreenshotsSection />
@@ -39,7 +39,7 @@ const Index = () => {
           </>
         );
       default:
-        return <HeroSection />;
+        return <HeroSection onTabChange={setActiveTab} />;
     }
   };
 
