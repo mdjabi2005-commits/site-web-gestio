@@ -1,23 +1,19 @@
 // ============================================================
-// sw.js — Gestio Service Worker (Cache-First)
-// Issue #37 — Phase 4: Bundling & Offline
+// sw.js — Gestio Service Worker (Cache-First + Debug)
 // ============================================================
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const STATIC_CACHE = `gestio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `gestio-dynamic-${CACHE_VERSION}`;
-
-// Fichiers lourds à pré-cacher à l'installation
 const BASE_PATH = "/mobile/";
+
 const STATIC_ASSETS = [
-  // Pyodide runtime
   `${BASE_PATH}pyodide/pyodide.js`,
   `${BASE_PATH}pyodide/pyodide.mjs`,
   `${BASE_PATH}pyodide/pyodide.asm.js`,
   `${BASE_PATH}pyodide/pyodide.asm.wasm`,
   `${BASE_PATH}pyodide/python_stdlib.zip`,
   `${BASE_PATH}pyodide/pyodide-lock.json`,
-  // Wheels Python
   `${BASE_PATH}pyodide/typing_extensions-4.7.1-py3-none-any.whl`,
   `${BASE_PATH}pyodide/pydantic-1.10.7-py3-none-any.whl`,
   `${BASE_PATH}pyodide/PyYAML-6.0.1-cp311-cp311-emscripten_3_1_46_wasm32.whl`,
@@ -26,102 +22,81 @@ const STATIC_ASSETS = [
   `${BASE_PATH}pyodide/pypdf-6.9.1-py3-none-any.whl`,
   `${BASE_PATH}pyodide/charset_normalizer-3.4.6-py3-none-any.whl`,
   `${BASE_PATH}pyodide/pdfminer_six-20260107-py3-none-any.whl`,
-  // Backend
   `${BASE_PATH}backend.zip`,
   `${BASE_PATH}bootstrap.py`,
 ];
 
-// Domaines à ne JAMAIS cacher (réseau uniquement)
-const NETWORK_ONLY_ORIGINS = [
-  "api.groq.com",
-  "accounts.google.com",
-];
+const NETWORK_ONLY_ORIGINS = ["api.groq.com", "accounts.google.com"];
 
-// ────────────────────────────────────────────────────────────
-// INSTALL — pré-cache des assets statiques
-// ────────────────────────────────────────────────────────────
 self.addEventListener("install", (event) => {
-  console.log("[SW] Installing — pre-caching static assets...");
+  console.log("[SW] Installing v" + CACHE_VERSION + "...");
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => {
-      return Promise.allSettled(
-        STATIC_ASSETS.map((url) =>
-          cache.add(url).catch((err) => {
-            console.warn(`[SW] Failed to pre-cache ${url}:`, err);
-          })
-        )
-      );
+    caches.open(STATIC_CACHE).then(async (cache) => {
+      let successCount = 0, failCount = 0;
+      for (const url of STATIC_ASSETS) {
+        try {
+          await cache.add(url);
+          successCount++;
+          console.log("[SW] Cached: " + url);
+        } catch (err) {
+          failCount++;
+          console.warn("[SW] Failed to cache: " + url, err);
+        }
+      }
+      console.log(`[SW] Pre-cache done: ${successCount} success, ${failCount} failed`);
     }).then(() => {
-      console.log("[SW] Static assets cached, skipping waiting...");
+      console.log("[SW] Install complete, skipping waiting");
       return self.skipWaiting();
     })
   );
 });
 
-// ────────────────────────────────────────────────────────────
-// ACTIVATE — purge des anciens caches
-// ────────────────────────────────────────────────────────────
 self.addEventListener("activate", (event) => {
-  console.log("[SW] Activating — cleaning old caches...");
+  console.log("[SW] Activating...");
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
         keys
           .filter((key) => key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
           .map((key) => {
-            console.log(`[SW] Deleting old cache: ${key}`);
+            console.log("[SW] Deleting old cache: " + key);
             return caches.delete(key);
           })
       )
-    ).then(() => self.clients.claim())
+    ).then(() => {
+      console.log("[SW] Activate complete");
+      return self.clients.claim();
+    })
   );
 });
 
-// ────────────────────────────────────────────────────────────
-// FETCH — stratégie Cache-First
-// ────────────────────────────────────────────────────────────
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // 1. Réseau uniquement pour les APIs externes
   if (NETWORK_ONLY_ORIGINS.some((origin) => url.hostname.includes(origin))) {
-    return; // laisser le navigateur gérer
+    return;
   }
 
-  // 2. Ignorer les requêtes non-GET
   if (event.request.method !== "GET") return;
-
-  // 3. Ignorer les extensions Capacitor / chrome-extension
   if (!url.protocol.startsWith("http")) return;
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      if (cached) {
-        // Cache-First : on sert depuis le cache directement
-        return cached;
-      }
+      if (cached) return cached;
 
-      // Pas dans le cache → réseau + mise en cache dynamique
-      return fetch(event.request)
-        .then((networkResponse) => {
-          if (
-            networkResponse &&
-            networkResponse.status === 200 &&
-            networkResponse.type === "basic"
-          ) {
-            const responseClone = networkResponse.clone();
-            caches.open(DYNAMIC_CACHE).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          // Fallback offline : retourner index.html pour navigation SPA
-          if (event.request.mode === "navigate") {
-            return caches.match(`${BASE_PATH}index.html`);
-          }
-        });
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(DYNAMIC_CACHE).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        if (event.request.mode === "navigate") {
+          return caches.match(BASE_PATH + "/mobile/index.html");
+        }
+      });
     })
   );
 });
