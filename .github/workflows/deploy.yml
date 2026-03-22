@@ -23,27 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        working-directory: code-source
-        run: npm ci
-
-      - name: Build
-        working-directory: code-source
-        run: npm run build
-
-      - name: Copy build files
-        run: |
-          cp code-source/dist/index.html index.html
-          cp -r code-source/dist/assets/* assets/
-          rm -rf assets/*.css assets/*.js
-          cp code-source/dist/assets/*.css assets/
-          cp code-source/dist/assets/*.js assets/
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
