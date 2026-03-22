@@ -1,11 +1,15 @@
 # Dependencies
 node_modules/
 
-# Code source (has its own repo)
-code-source/
+# Code source
+code-source/node_modules/
+code-source/.vite/
+code-source/dist/
+code-source/package-lock.json
+code-source/bun.lockb
 
-# Build output (generated during deployment, not needed in repo)
-# Keep only the final built files
+# Build output (generated during deployment)
+dist/
 
 # Environment
 .env
