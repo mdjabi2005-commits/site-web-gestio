@@ -10,17 +10,17 @@ const navLinks = [
   { label: "FAQ", href: "#faq" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ onTabChange }: { onTabChange: (tab: string) => void }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-border">
         <div className="container flex items-center justify-between h-[72px]">
-          <a href="#" className="flex items-center gap-3 text-2xl font-bold text-foreground no-underline">
+          <button onClick={() => onTabChange("home")} className="flex items-center gap-3 text-2xl font-bold text-foreground no-underline cursor-pointer">
             <GestioLogo />
             Gestio
-          </a>
+          </button>
           <ul className="hidden md:flex gap-8 list-none">
             {navLinks.map((l) => (
               <li key={l.href}>
