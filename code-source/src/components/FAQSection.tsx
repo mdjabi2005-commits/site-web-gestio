@@ -23,10 +23,7 @@ const faqs = [
     q: "Qu'est-ce qu'une Progressive Web App (PWA) ?",
     a: "Une PWA est une application web que vous installez sur votre téléphone depuis le navigateur. Elle fonctionne hors-ligne, s'affiche avec une icône sur votre écran d'accueil, et se lance comme une application native. Vos données sont conservées localement sur votre appareil — vous gardez le contrôle total.",
   },
-  {
-    q: "Comment puis-je sauvegarder mes données ?",
-    a: "Allez dans Paramètres, puis \"Sauvegarde\". Vous pouvez exporter toutes vos données dans un fichier que vous pouvez stocker où vous voulez (clé USB, cloud personnel, etc.).",
-  },
+
   {
     q: "Comment signaler un bug ou suggérer une fonctionnalité ?",
     a: "Envoyez-nous un email à lamoms954@gmail.com avec une description détaillée du bug ou de votre suggestion. Nous lisons tous les messages.",
