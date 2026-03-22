@@ -17,7 +17,11 @@ const faqs = [
   },
   {
     q: "L'application fonctionne-t-elle sur smartphone ?",
-    a: "Oui ! Gestio est maintenant disponible en version mobile. Installez-la directement depuis votre navigateur comme une Progressive Web App (PWA) sur Android ou iOS.",
+    a: "Oui ! Gestio est disponible en version mobile (PWA). Installez-la directement depuis votre navigateur — elle apparaît comme une vraie application sur votre téléphone, sans passer par un store.",
+  },
+  {
+    q: "Qu'est-ce qu'une Progressive Web App (PWA) ?",
+    a: "Une PWA est une application web que vous installez sur votre téléphone depuis le navigateur, comme un vrai приложения. Elle fonctionne hors-ligne, s'affiche avec une icône sur votre écran d'accueil, et se lance comme une application native. Aucune inscription requise.",
   },
   {
     q: "Comment puis-je sauvegarder mes données ?",
