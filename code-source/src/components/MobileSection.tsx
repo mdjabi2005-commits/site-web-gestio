@@ -24,6 +24,15 @@ const MobileSection = () => (
           <p className="text-muted-foreground text-lg">
             Emportez vos finances partout avec vous. L'application mobile Gestio offre la même expérience complète que la version desktop.
           </p>
+          <a
+            href="https://gestio.software/mobile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline mt-6"
+          >
+            <Smartphone className="w-5 h-5" />
+            Ouvrir l'application mobile
+          </a>
         </div>
       </Reveal>
 
