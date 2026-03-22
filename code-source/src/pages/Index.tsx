@@ -1,6 +1,7 @@
 import { useState } from "react";
 import FooterSection from "@/components/FooterSection";
 import HeroSection from "@/components/HeroSection";
+import DownloadCTASection from "@/components/DownloadCTASection";
 import FeaturesSection from "@/components/FeaturesSection";
 import MobileSection from "@/components/MobileSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -20,6 +21,7 @@ const Index = () => {
         return (
           <>
             <HeroSection onTabChange={setActiveTab} />
+            <DownloadCTASection onTabChange={setActiveTab} />
             <FeaturesSection />
             <PrivacySection />
             <ScreenshotsSection />
