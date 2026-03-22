@@ -8,26 +8,27 @@ const STATIC_CACHE = `gestio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `gestio-dynamic-${CACHE_VERSION}`;
 
 // Fichiers lourds à pré-cacher à l'installation
+const BASE_PATH = "/mobile/";
 const STATIC_ASSETS = [
   // Pyodide runtime
-  "/pyodide/pyodide.js",
-  "/pyodide/pyodide.mjs",
-  "/pyodide/pyodide.asm.js",
-  "/pyodide/pyodide.asm.wasm",
-  "/pyodide/python_stdlib.zip",
-  "/pyodide/pyodide-lock.json",
+  `${BASE_PATH}pyodide/pyodide.js`,
+  `${BASE_PATH}pyodide/pyodide.mjs`,
+  `${BASE_PATH}pyodide/pyodide.asm.js`,
+  `${BASE_PATH}pyodide/pyodide.asm.wasm`,
+  `${BASE_PATH}pyodide/python_stdlib.zip`,
+  `${BASE_PATH}pyodide/pyodide-lock.json`,
   // Wheels Python
-  "/pyodide/typing_extensions-4.7.1-py3-none-any.whl",
-  "/pyodide/pydantic-1.10.7-py3-none-any.whl",
-  "/pyodide/PyYAML-6.0.1-cp311-cp311-emscripten_3_1_46_wasm32.whl",
-  "/pyodide/python_dotenv-1.0.1-py3-none-any.whl",
-  "/pyodide/python_dateutil-2.8.2-py2.py3-none-any.whl",
-  "/pyodide/pypdf-6.9.1-py3-none-any.whl",
-  "/pyodide/charset_normalizer-3.4.6-py3-none-any.whl",
-  "/pyodide/pdfminer_six-20260107-py3-none-any.whl",
+  `${BASE_PATH}pyodide/typing_extensions-4.7.1-py3-none-any.whl`,
+  `${BASE_PATH}pyodide/pydantic-1.10.7-py3-none-any.whl`,
+  `${BASE_PATH}pyodide/PyYAML-6.0.1-cp311-cp311-emscripten_3_1_46_wasm32.whl`,
+  `${BASE_PATH}pyodide/python_dotenv-1.0.1-py3-none-any.whl`,
+  `${BASE_PATH}pyodide/python_dateutil-2.8.2-py2.py3-none-any.whl`,
+  `${BASE_PATH}pyodide/pypdf-6.9.1-py3-none-any.whl`,
+  `${BASE_PATH}pyodide/charset_normalizer-3.4.6-py3-none-any.whl`,
+  `${BASE_PATH}pyodide/pdfminer_six-20260107-py3-none-any.whl`,
   // Backend
-  "/backend.zip",
-  "/bootstrap.py",
+  `${BASE_PATH}backend.zip`,
+  `${BASE_PATH}bootstrap.py`,
 ];
 
 // Domaines à ne JAMAIS cacher (réseau uniquement)
@@ -118,7 +119,7 @@ self.addEventListener("fetch", (event) => {
         .catch(() => {
           // Fallback offline : retourner index.html pour navigation SPA
           if (event.request.mode === "navigate") {
-            return caches.match("/index.html");
+            return caches.match(`${BASE_PATH}index.html`);
           }
         });
     })
