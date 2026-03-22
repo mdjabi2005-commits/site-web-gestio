@@ -22,7 +22,7 @@ const servicesSection = () => (
       <Reveal>
         <div className="text-center max-w-[700px] mx-auto mb-16">
           <div className="inline-flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-wider mb-4">
-            Mes Services
+Prestations
           </div>
           <h2 className="text-foreground text-[clamp(2rem,4vw,3rem)] font-bold mb-4">
             Développement sur mesure
