@@ -11,13 +11,14 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  concurrency:
+    group: "pages"
+    cancel-in-progress: true
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      if: github.actor != 'github-actions[bot]'
 
     steps:
       - name: Checkout
@@ -32,12 +33,23 @@ jobs:
         working-directory: ./code-source
         run: npm install
 
-      - name: Build
+      - name: Build main site
         working-directory: ./code-source
         run: npm run build
 
-      - name: Copy build output to root
+      - name: Copy main site output to root
         run: cp -r code-source/dist/* .
+
+      - name: Install mobile dependencies
+        working-directory: ./mobile/webapp
+        run: npm install
+
+      - name: Build mobile PWA
+        working-directory: ./mobile/webapp
+        run: npm run build
+
+      - name: Copy mobile PWA to /mobile
+        run: mkdir -p mobile && cp -r mobile/webapp/dist/* mobile/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
