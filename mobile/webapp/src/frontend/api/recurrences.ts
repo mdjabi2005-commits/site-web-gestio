@@ -70,7 +70,7 @@ export async function backfillRecurrences(): Promise<number> {
     for (const r of recurrences) {
         const nextOcc = getNextOccurrence(r.date_debut, r.frequence, r.jour)
         await sqlBridge.execute(
-            "INSERT INTO transactions (type, montant, categorie, sous_categorie, description, date, account_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO transactions (type, montant, categorie, sous_categorie, description, date, compte_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
             [r.type, r.montant, r.categorie, r.sous_categorie, r.nom, nextOcc, r.account_id]
         )
         count++

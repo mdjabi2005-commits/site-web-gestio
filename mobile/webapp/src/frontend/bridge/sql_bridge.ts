@@ -38,6 +38,8 @@ class SqlBridge {
 
                 if (!this.hasTable("transactions")) {
                     await this.createSchema()
+                } else {
+                    await this.runMigrations()
                 }
 
                 this.isInitialized = true
@@ -75,7 +77,7 @@ class SqlBridge {
                 sous_categorie TEXT,
                 description TEXT,
                 date TEXT NOT NULL,
-                account_id INTEGER DEFAULT 1,
+                compte_id INTEGER DEFAULT 1,
                 recurrence_id INTEGER,
                 created_at TEXT DEFAULT (datetime('now')),
                 updated_at TEXT DEFAULT (datetime('now'))
@@ -168,6 +170,23 @@ class SqlBridge {
 
         await this.saveToIndexedDB()
         console.log("[SqlBridge] Schema created successfully")
+    }
+
+    private async runMigrations(): Promise<void> {
+        if (!this.db) return
+        try {
+            const columnsInfo = this.db.exec("PRAGMA table_info(transactions)")
+            if (columnsInfo.length > 0 && columnsInfo[0].values) {
+                const columns = columnsInfo[0].values.map((col: any) => col[1] as string)
+                if (columns.includes("account_id") && !columns.includes("compte_id")) {
+                    console.log("[SqlBridge] Migrating transactions.account_id to compte_id...")
+                    this.db.run("ALTER TABLE transactions RENAME COLUMN account_id TO compte_id")
+                    await this.saveToIndexedDB()
+                }
+            }
+        } catch (e) {
+            console.warn("[SqlBridge] Migration failed (ignored):", e)
+        }
     }
 
     async execute(query: string, params: unknown[] = []): Promise<unknown[]> {

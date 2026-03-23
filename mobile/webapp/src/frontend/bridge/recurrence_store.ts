@@ -50,7 +50,7 @@ class RecurrenceStore {
 
         console.info("[RecurrenceStore] Fetching from SQL...")
         const query = `SELECT r.id, t.type, t.categorie, t.sous_categorie, t.montant, 
-                              t.date as date_debut, t.date_fin, r.frequence, t.description, 
+                              t.date as date_debut, r.date_fin, r.frequence, t.description, 
                               CASE WHEN r.actif = 1 THEN 'Actif' ELSE 'Inactif' END as statut,
                               r.prochaine_occurrence, r.intervalle, r.transaction_id
                        FROM recurrences r 
