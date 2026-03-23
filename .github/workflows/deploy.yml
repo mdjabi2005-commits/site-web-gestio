@@ -43,6 +43,17 @@ jobs:
           cp -r code-source/dist/* _site/
           cp 404.html _site/
 
+      - name: Install mobile dependencies
+        working-directory: ./mobile/webapp
+        run: npm install
+
+      - name: Build mobile PWA
+        working-directory: ./mobile/webapp
+        run: npm run build
+
+      - name: Copy mobile PWA to _site/mobile
+        run: mkdir -p _site/mobile && cp -r mobile/webapp/dist/* _site/mobile/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
