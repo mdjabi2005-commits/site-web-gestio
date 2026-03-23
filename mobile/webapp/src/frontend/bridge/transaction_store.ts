@@ -45,7 +45,7 @@ class TransactionStore {
     }
 
     async fetchFromSql(filters: { limit?: number, force?: boolean } = {}): Promise<BackendTransaction[]> {
-        if ((this.isHydratedFromSql && !filters.force) || this.isInitializingFromSql) {
+        if (!filters.force && ((this.isHydratedFromSql) || this.isInitializingFromSql)) {
             return this.transactions
         }
 
@@ -70,6 +70,25 @@ class TransactionStore {
             this.isInitializingFromSql = false
         }
         return this.transactions
+    }
+
+    async forceRefresh(): Promise<BackendTransaction[]> {
+        this.invalidate()
+        // Attendre que tout fetch en cours se termine pour éviter un conflit SQL
+        if (this.isFetching && this.fetchPromise) {
+            await this.fetchPromise.catch(() => {})
+        }
+        
+        this.isFetching = true
+        this.fetchPromise = (async () => {
+            try {
+                return await this.fetchFromSql({ force: true })
+            } finally {
+                this.isFetching = false
+                this.fetchPromise = null
+            }
+        })()
+        return this.fetchPromise
     }
 
     async fetchIfNeeded(): Promise<BackendTransaction[]> {

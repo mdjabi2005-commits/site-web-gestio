@@ -50,8 +50,7 @@ export function useHome() {
     const fetchHomeData = useCallback(async () => {
         setLoading(true)
         try {
-            // fetchIfNeeded gère maintenant la priorité SQL (instant) 
-            const data = await transactionStore.fetchIfNeeded()
+            const data = await transactionStore.forceRefresh()
             setTransactions(data.map(mapToUI))
         } catch (err) {
             console.error("Failed to fetch home transactions:", err)

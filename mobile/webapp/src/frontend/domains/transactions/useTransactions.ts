@@ -62,9 +62,8 @@ export function useTransactions() {
         transactions,
         loading,
         handleDelete,
-        refresh: () => {
-            transactionStore.invalidate()
-            fetchTransactions()
+        refresh: async () => {
+            await transactionStore.forceRefresh()
         }
     }
 }
