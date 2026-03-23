@@ -7,7 +7,7 @@ import { Button } from "@/ui/components/ui/button"
 import { Input } from "@/ui/components/ui/input"
 import { Label } from "@/ui/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/components/ui/select"
-import { getStructuredCategories, addTransaction, updateTransaction, type Transaction } from "@/frontend/api/transactions"
+import { getStructuredCategories, updateTransaction, type Transaction } from "@/frontend/api/transactions"
 import { transactionStore } from "@/frontend/bridge/transaction_store"
 
 const formSchema = z.object({
@@ -64,8 +64,10 @@ export function TransactionForm({ transactionToEdit, onSuccess, onClose }: Trans
             const payload: Partial<Transaction> = {
                 ...values, sous_categorie: values.sous_categorie || null, description: values.description || null, source: "manuel"
             }
-            const success = transactionToEdit ? await updateTransaction(transactionToEdit.id, payload) : (await addTransaction(payload)) !== null
-            if (success) { transactionStore.invalidate(); onSuccess(); onClose(); } else { alert("Erreur lors de l'enregistrement."); }
+            const success = transactionToEdit 
+                ? await updateTransaction(transactionToEdit.id, payload) 
+                : await transactionStore.addTransaction(payload)
+            if (success) { onSuccess(); onClose(); } else { alert("Erreur lors de l'enregistrement."); }
         } finally { setIsSubmitting(false) }
     }
 

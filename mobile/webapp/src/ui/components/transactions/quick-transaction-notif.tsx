@@ -7,7 +7,7 @@ import * as z from "zod"
 import { Input } from "@/ui/components/ui/input"
 import { Button } from "@/ui/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/components/ui/select"
-import { getStructuredCategories, addTransaction, updateTransaction, type Transaction } from "@/frontend/api/transactions"
+import { getStructuredCategories, updateTransaction, type Transaction } from "@/frontend/api/transactions"
 import { cn } from "@/lib/utils"
 import { transactionStore } from "@/frontend/bridge/transaction_store"
 
@@ -64,8 +64,10 @@ export function QuickTransactionNotif({ transaction, open, onConfirm, onCancel, 
         setIsSubmitting(true)
         try {
             const payload = { ...data, source: transaction?.source || source }
-            const success = data.id ? await updateTransaction(data.id, payload) : (await addTransaction(payload)) !== null
-            if (success) { transactionStore.invalidate(); onConfirm() }
+            const success = data.id 
+                ? await updateTransaction(data.id, payload) 
+                : await transactionStore.addTransaction(payload)
+            if (success) { onConfirm() }
         } catch (err) {
             console.error("Failed to save transaction:", err)
         } finally { setIsSubmitting(false) }
