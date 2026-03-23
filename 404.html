@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8" />
   <title>Gestio</title>
   <script>
     var l = window.location;
     
-    // Si l'utilisateur essaie d'accéder à l'application mobile,
-    // on le redirige vers l'index.html du sous-dossier mobile
+    // Si l'utilisateur essaie d'accéder à l'application mobile (qui ne gère pas de routes complexes)
     if (l.pathname.startsWith('/mobile/')) {
-        l.replace(
-            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            '/mobile/?/' +
-            l.pathname.replace('/mobile/', '').split('/').join('/').replace(/&/g, '~and~') +
-            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-            l.hash
-        );
+        // Rediriger vers /mobile/ propre uniquement si l'URL contient des cochonneries (loop infinit) ou un faux chemin
+        if (l.pathname !== '/mobile/' || l.search !== '' || l.hash !== '') {
+            l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/mobile/');
+        }
     } else {
-        // Fix pour React Router sur GitHub Pages (racine)
-        var pathSegmentsToKeep = 0; // 0 = domaine personnalisé à la racine
+        // Fix pour React Router sur le site web principal (racine)
+        var pathSegmentsToKeep = 0;
         l.replace(
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
             l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
@@ -30,7 +25,5 @@
     }
   </script>
 </head>
-
 <body></body>
-
 </html>
