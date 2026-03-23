@@ -161,7 +161,14 @@ export function QuickTransactionNotif({ transaction, open, onConfirm, onCancel, 
                         </div>
 
                         {form.formState.errors.montant && (
-                            <p className="text-[10px] text-destructive font-black uppercase tracking-widest px-4 animate-pulse">{form.formState.errors.montant.message}</p>
+                            <p className="text-[10px] text-destructive font-black uppercase tracking-widest px-4 animate-pulse mb-1">
+                                {form.formState.errors.montant.message}
+                            </p>
+                        )}
+                        {form.formState.errors.categorie && (
+                            <p className="text-[10px] text-destructive font-black uppercase tracking-widest px-4 animate-pulse">
+                                {form.formState.errors.categorie.message}
+                            </p>
                         )}
                     </form>
                 </motion.div>

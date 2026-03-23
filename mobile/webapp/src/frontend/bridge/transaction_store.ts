@@ -126,15 +126,15 @@ class TransactionStore {
         try {
             console.info("[TransactionStore] Adding transaction...", data)
             await sqlBridge.execute(
-                "INSERT INTO transactions (montant, type, categorie, sous_categorie, description, date, source, recurrence, compte_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [data.montant, data.type, data.categorie, data.sous_categorie || null, data.description || null, data.date, data.source || "Manuel", data.recurrence || null, data.compte_id || 1]
+                "INSERT INTO transactions (montant, type, categorie, sous_categorie, description, date, source, recurrence_id, compte_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [data.montant, data.type, data.categorie, data.sous_categorie || null, data.description || null, data.date, data.source || "Manuel", data.recurrence_id || null, data.compte_id || 1]
             )
             console.debug("[TransactionStore] SQL insert completed")
             this.isHydratedFromSql = false
             console.debug("[TransactionStore] Calling fetchFromSql with force...")
             await this.fetchFromSql({ force: true })
             console.debug("[TransactionStore] fetchFromSql completed, listeners should be notified")
-            return null
+            return 1 as any // Retourner une valeur vérité pour le UI (ID ou true)
         } catch (err) {
             console.error("[TransactionStore] Failed to add transaction:", err)
             return null

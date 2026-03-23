@@ -12,7 +12,7 @@ export interface Transaction {
     montant: number
     date: string
     source: string
-    recurrence: string | null
+    recurrence_id: number | null
     date_fin: string | null
     compte_id: number | null
     external_id: string | null

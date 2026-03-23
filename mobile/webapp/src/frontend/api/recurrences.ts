@@ -45,7 +45,7 @@ function getNextOccurrence(dateDebut: string, frequence: string, jour: number | 
 export async function addRecurrence(data: Partial<Recurrence>): Promise<number | null> {
     await sqlBridge.execute(
         "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, account_id, frequence, jour, date_debut, date_fin, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie, data.account_id || 1, data.frequence, data.jour, data.date_debut, data.date_fin, data.actif ?? 1]
+        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie ?? null, data.account_id || 1, data.frequence, data.jour ?? null, data.date_debut, data.date_fin ?? null, data.actif ?? 1]
     )
     return 1
 }

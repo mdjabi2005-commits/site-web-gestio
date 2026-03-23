@@ -183,6 +183,16 @@ class SqlBridge {
                     this.db.run("ALTER TABLE transactions RENAME COLUMN account_id TO compte_id")
                     await this.saveToIndexedDB()
                 }
+                if (!columns.includes("source")) {
+                    console.log("[SqlBridge] Migrating transactions: adding source column...")
+                    this.db.run("ALTER TABLE transactions ADD COLUMN source TEXT DEFAULT 'Manuel'")
+                    await this.saveToIndexedDB()
+                }
+                if (columns.includes("recurrence") && !columns.includes("recurrence_id")) {
+                    console.log("[SqlBridge] Migrating transactions: renaming recurrence to recurrence_id...")
+                    this.db.run("ALTER TABLE transactions RENAME COLUMN recurrence TO recurrence_id")
+                    await this.saveToIndexedDB()
+                }
             }
         } catch (e) {
             console.warn("[SqlBridge] Migration failed (ignored):", e)
@@ -196,8 +206,11 @@ class SqlBridge {
         try {
             const isSelect = query.trim().toUpperCase().startsWith("SELECT")
 
+            // Normaliser les types pour sql.js (remplacer undefined par null)
+            const safeParams = params.map(p => p === undefined ? null : p) as (string | number | null)[]
+
             if (isSelect) {
-                const result = this.db.exec(query, params as (string | number | null)[])
+                const result = this.db.exec(query, safeParams)
                 if (result.length === 0) return []
 
                 const columns = result[0].columns
@@ -209,7 +222,7 @@ class SqlBridge {
                     return obj
                 })
             } else {
-                this.db.run(query, params as (string | number | null)[])
+                this.db.run(query, safeParams)
                 await this.saveToIndexedDB()
                 return []
             }
