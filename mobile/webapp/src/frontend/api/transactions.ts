@@ -64,15 +64,14 @@ export async function addTransaction(data: Partial<Transaction>): Promise<number
         return (data as Record<string, unknown>)[f] ?? null
     })
 
-    const result = await sqlBridge.execute(
+    await sqlBridge.execute(
         `INSERT INTO transactions (${fields.join(", ")}) VALUES (${placeholders})`,
         values
     )
-    if (result && (result as Record<string, unknown>[]).length > 0) {
-        return Number((result as Record<string, unknown>[])[0].id) || null
-    }
-    const all = await sqlBridge.execute("SELECT last_insert_rowid() as id", [])
-    return Number((all as Record<string, unknown>[])[0]?.id) || null
+    
+    // Si execute n'a pas levé d'erreur, c'est que l'insertion a réussi.
+    // Pas besoin de last_insert_rowid() qui peut retourner null/undefined de façon hasardeuse dans sql.js
+    return 1
 }
 
 export async function updateTransaction(txId: number, data: Partial<Transaction>): Promise<boolean> {

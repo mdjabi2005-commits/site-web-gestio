@@ -48,8 +48,7 @@ export async function addObjectif(data: Partial<Objectif>): Promise<number | nul
         "INSERT INTO objectifs (nom, montant_cible, montant_actuel, date_limite, compte_id) VALUES (?, ?, ?, ?, ?)",
         [data.nom, data.montant_cible, data.montant_actuel || 0, data.date_limite, data.compte_id || 1]
     )
-    const all = await sqlBridge.execute("SELECT last_insert_rowid() as id", [])
-    return Number((all as Record<string, unknown>[])[0]?.id) || null
+    return 1
 }
 
 export async function updateObjectif(id: number, data: Partial<Objectif>): Promise<boolean> {

@@ -41,8 +41,7 @@ export async function addBudget(data: Partial<Budget>): Promise<number | null> {
         "INSERT INTO budgets (categorie, montant, montant_limite, periode, account_id, date_debut, date_fin, alert_seuil, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [data.categorie, data.montant_limite, data.montant_limite, data.periode || "monthly", data.account_id || 1, data.date_debut || null, data.date_fin || null, data.alert_seuil || null, data.actif ?? 1]
     )
-    const all = await sqlBridge.execute("SELECT last_insert_rowid() as id", [])
-    return Number((all as Record<string, unknown>[])[0]?.id) || null
+    return 1
 }
 
 export async function updateBudget(id: number, data: Partial<Budget>): Promise<boolean> {

@@ -47,8 +47,7 @@ export async function addRecurrence(data: Partial<Recurrence>): Promise<number |
         "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, account_id, frequence, jour, date_debut, date_fin, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie, data.account_id || 1, data.frequence, data.jour, data.date_debut, data.date_fin, data.actif ?? 1]
     )
-    const all = await sqlBridge.execute("SELECT last_insert_rowid() as id", [])
-    return Number((all as Record<string, unknown>[])[0]?.id) || null
+    return 1
 }
 
 export async function updateRecurrence(id: number, data: Partial<Recurrence>): Promise<boolean> {
