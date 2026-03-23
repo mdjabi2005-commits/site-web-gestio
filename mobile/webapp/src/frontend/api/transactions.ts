@@ -59,7 +59,10 @@ export async function getTransactions(filters: TransactionFilters = {}): Promise
 export async function addTransaction(data: Partial<Transaction>): Promise<number | null> {
     const fields = ["montant", "type", "categorie", "sous_categorie", "description", "date", "compte_id", "recurrence_id"]
     const placeholders = fields.map(() => "?").join(", ")
-    const values = fields.map((f) => (data as Record<string, unknown>)[f] ?? null)
+    const values = fields.map((f) => {
+        if (f === "compte_id" && (data as Record<string, unknown>)[f] === undefined) return 1
+        return (data as Record<string, unknown>)[f] ?? null
+    })
 
     const result = await sqlBridge.execute(
         `INSERT INTO transactions (${fields.join(", ")}) VALUES (${placeholders})`,
