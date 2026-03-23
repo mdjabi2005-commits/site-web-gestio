@@ -28,10 +28,12 @@ class RecurrenceStore {
     private setRecurrences(data: Recurrence[]) {
         this.recurrences = data
         this.lastFetch = Date.now()
+        console.debug("[RecurrenceStore] setRecurrences called with", data.length, "items, notifying", this.listeners.size, "listeners")
         this.notify()
     }
 
     private notify() {
+        console.debug("[RecurrenceStore] Notifying", this.listeners.size, "listeners with", this.recurrences.length, "recurrences")
         this.listeners.forEach(listener => listener(this.recurrences))
     }
 
@@ -54,11 +56,12 @@ class RecurrenceStore {
                               CASE WHEN r.actif = 1 THEN 'Actif' ELSE 'Inactif' END as statut,
                               r.prochaine_occurrence, r.intervalle, r.transaction_id
                        FROM recurrences r 
-                       JOIN transactions t ON r.transaction_id = t.id 
+                       LEFT JOIN transactions t ON r.transaction_id = t.id 
                        ORDER BY r.prochaine_occurrence ASC`
         
         try {
             const results = await sqlBridge.execute(query)
+            console.debug("[RecurrenceStore] SQL results count:", results?.length || 0)
             if (results) {
                 const mapped = (results as any[]).map(r => ({
                     id: r.id,
@@ -115,10 +118,14 @@ class RecurrenceStore {
 
     async addRecurrence(data: Partial<Recurrence>): Promise<number | null> {
         try {
+            console.info("[RecurrenceStore] Adding recurrence...", data)
             const newId = await addRecurrence(data)
+            console.debug("[RecurrenceStore] addRecurrence result:", newId)
             if (newId) {
                 this.invalidate()
+                console.debug("[RecurrenceStore] Calling fetchIfNeeded after invalidate...")
                 await this.fetchIfNeeded()
+                console.debug("[RecurrenceStore] fetchIfNeeded completed, listeners should be notified")
                 return newId
             }
             return null

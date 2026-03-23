@@ -28,10 +28,12 @@ class TransactionStore {
     setTransactions(data: BackendTransaction[]) {
         this.transactions = data
         this.lastFetch = Date.now()
+        console.debug("[TransactionStore] setTransactions called with", data.length, "transactions, notifying", this.listeners.size, "listeners")
         this.notify()
     }
 
     private notify() {
+        console.debug("[TransactionStore] Notifying", this.listeners.size, "listeners with", this.transactions.length, "transactions")
         this.listeners.forEach(listener => listener(this.transactions))
     }
 
@@ -122,12 +124,16 @@ class TransactionStore {
 
     async addTransaction(data: Partial<BackendTransaction>): Promise<number | null> {
         try {
+            console.info("[TransactionStore] Adding transaction...", data)
             await sqlBridge.execute(
                 "INSERT INTO transactions (montant, type, categorie, sous_categorie, description, date, source, recurrence, compte_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [data.montant, data.type, data.categorie, data.sous_categorie || null, data.description || null, data.date, data.source || "Manuel", data.recurrence || null, data.compte_id || 1]
             )
+            console.debug("[TransactionStore] SQL insert completed")
             this.isHydratedFromSql = false
+            console.debug("[TransactionStore] Calling fetchFromSql with force...")
             await this.fetchFromSql({ force: true })
+            console.debug("[TransactionStore] fetchFromSql completed, listeners should be notified")
             return null
         } catch (err) {
             console.error("[TransactionStore] Failed to add transaction:", err)

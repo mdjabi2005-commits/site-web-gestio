@@ -37,10 +37,12 @@ class BudgetStore {
         this.budgetStatuses = statuses
         this.budgetSummary = summary
         this.lastFetch = Date.now()
+        console.debug("[BudgetStore] setData called with", statuses.length, "budgets, notifying", this.listeners.size, "listeners")
         this.notify()
     }
 
     private notify() {
+        console.debug("[BudgetStore] Notifying", this.listeners.size, "listeners with", this.budgetStatuses.length, "budgets")
         this.listeners.forEach(listener => listener(this.budgetStatuses, this.budgetSummary))
     }
 
@@ -177,10 +179,14 @@ class BudgetStore {
 
     async addBudget(data: Partial<Budget>): Promise<number | null> {
         try {
+            console.info("[BudgetStore] Adding budget...", data)
             const newId = await addBudget(data)
+            console.debug("[BudgetStore] addBudget result:", newId)
             if (newId) {
                 this.invalidate()
+                console.debug("[BudgetStore] Calling fetchIfNeeded after invalidate...")
                 await this.fetchIfNeeded()
+                console.debug("[BudgetStore] fetchIfNeeded completed, listeners should be notified")
                 return newId
             }
             return null

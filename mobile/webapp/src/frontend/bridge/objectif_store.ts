@@ -27,10 +27,12 @@ class ObjectifStore {
     private setData(objectifs: Objectif[]) {
         this.objectifs = objectifs
         this.lastFetch = Date.now()
+        console.debug("[ObjectifStore] setData called with", objectifs.length, "objectifs, notifying", this.listeners.size, "listeners")
         this.notify()
     }
 
     private notify() {
+        console.debug("[ObjectifStore] Notifying", this.listeners.size, "listeners with", this.objectifs.length, "objectifs")
         this.listeners.forEach(listener => listener(this.objectifs))
     }
 
@@ -101,11 +103,15 @@ class ObjectifStore {
 
     async addObjectif(data: Partial<Objectif>): Promise<number | null> {
         try {
+            console.info("[ObjectifStore] Adding objectif...", data)
             const newId = await addObjectif(data)
+            console.debug("[ObjectifStore] addObjectif result:", newId)
             if (newId) {
                 this.invalidate()
+                console.debug("[ObjectifStore] Calling fetchFromSql after invalidate...")
                 const data = await this.fetchFromSql()
                 this.setData(data)
+                console.debug("[ObjectifStore] fetchFromSql completed, setData called with", data.length, "items")
                 return newId
             }
             return null
