@@ -5,17 +5,29 @@
   <meta charset="utf-8" />
   <title>Gestio</title>
   <script>
-    // Fix pour React Router sur GitHub Pages
-    // Redirige toutes les routes vers index.html avec le chemin en query string
-    var pathSegmentsToKeep = 0; // 0 = domaine personnalisé à la racine
     var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    
+    // Si l'utilisateur essaie d'accéder à l'application mobile,
+    // on le redirige vers l'index.html du sous-dossier mobile
+    if (l.pathname.startsWith('/mobile/')) {
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            '/mobile/?/' +
+            l.pathname.replace('/mobile/', '').split('/').join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+    } else {
+        // Fix pour React Router sur GitHub Pages (racine)
+        var pathSegmentsToKeep = 0; // 0 = domaine personnalisé à la racine
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+    }
   </script>
 </head>
 
