@@ -11,6 +11,7 @@ import { useRecurrences } from "@/frontend/hooks/useRecurrences"
 import { QuickEcheanceNotif } from "../components/dashboard/quick-echeance-notif"
 
 function formatCurrency(amount: number) {
+  if (amount === undefined || amount === null || isNaN(amount)) return "0.00 €"
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -18,8 +19,8 @@ function formatCurrency(amount: number) {
   }).format(amount)
 }
 
-function getIconForCategory(category: string, type: string) {
-    const cat = category.toLowerCase()
+function getIconForCategory(category: string | undefined | null, type: string) {
+    const cat = (category || "").toLowerCase()
     if (cat.includes("energie") || cat.includes("electri")) return Zap
     if (cat.includes("telecom") || cat.includes("mobile") || cat.includes("téléphone")) return Smartphone
     if (cat.includes("internet") || cat.includes("wifi")) return Wifi
@@ -166,106 +167,118 @@ export function EcheancesView() {
                     )}
 
                     {filtered.map((ech) => {
-                        const Icon = getIconForCategory(ech.categorie, ech.type)
-                        
-                        let daysLeft = 0
-                        let displayDate = ech.prochaine_occurrence ? new Date(ech.prochaine_occurrence) : new Date(ech.date_debut)
-                        
-                        if (ech.prochaine_occurrence) {
-                            const diffTime = displayDate.getTime() - today.getTime()
-                            daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-                        }
-                        
-                        const isUrgent = daysLeft >= 0 && daysLeft <= 3 && ech.type === 'dépense'
-                        const isLate = daysLeft < 0
-                        
-                        const dayStr = displayDate.getDate().toString().padStart(2, '0')
-                        const monthStr = displayDate.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')
+                        try {
+                            const Icon = getIconForCategory(ech.categorie, ech.type)
+                            
+                            let daysLeft = 0
+                            let displayDate = new Date()
+                            
+                            try {
+                                displayDate = ech.prochaine_occurrence ? new Date(ech.prochaine_occurrence) : new Date(ech.date_debut)
+                                if (isNaN(displayDate.getTime())) displayDate = new Date()
+                            } catch (e) {
+                                displayDate = new Date()
+                            }
+                            
+                            if (ech.prochaine_occurrence) {
+                                const diffTime = displayDate.getTime() - today.getTime()
+                                daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+                            }
+                            
+                            const isUrgent = daysLeft >= 0 && daysLeft <= 3 && ech.type === 'dépense'
+                            const isLate = daysLeft < 0
+                            
+                            const dayStr = displayDate.getDate().toString().padStart(2, '0')
+                            const monthStr = displayDate.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')
 
-                        return (
-                            <div
-                                key={ech.id}
-                                className={`flex items-center justify-between rounded-2xl border bg-card px-5 py-4 transition-all hover:border-primary/20 border-border`}
-                            >
-                                <div className="flex items-center gap-4">
-                                    {/* Date block */}
-                                    <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-secondary text-center">
-                                        <span className="text-xs font-medium text-muted-foreground capitalize">
-                                            {monthStr}
-                                        </span>
-                                        <span className="text-lg font-bold leading-none text-foreground">
-                                            {dayStr}
-                                        </span>
-                                    </div>
+                            return (
+                                <div
+                                    key={ech.id}
+                                    className={`flex items-center justify-between rounded-2xl border bg-card px-5 py-4 transition-all hover:border-primary/20 border-border`}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        {/* Date block */}
+                                        <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-secondary text-center">
+                                            <span className="text-xs font-medium text-muted-foreground capitalize">
+                                                {monthStr}
+                                            </span>
+                                            <span className="text-lg font-bold leading-none text-foreground">
+                                                {dayStr}
+                                            </span>
+                                        </div>
 
-                                    {/* Icon + info */}
-                                    <div className="flex items-center gap-3 max-w-[150px] sm:max-w-xs">
-                                        <div
-                                            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                                                isLate ? "bg-red-500/15" : isUrgent ? "bg-amber-500/15" : "bg-primary/10"
-                                            }`}
-                                        >
-                                            <Icon
-                                                className={`h-5 w-5 ${
-                                                    isLate ? "text-red-500" : isUrgent ? "text-amber-500" : "text-primary"
+                                        {/* Icon + info */}
+                                        <div className="flex items-center gap-3 max-w-[150px] sm:max-w-xs">
+                                            <div
+                                                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl shadow-sm ${
+                                                    isLate ? "bg-red-500/15" : isUrgent ? "bg-amber-500/15" : "bg-primary/10"
                                                 }`}
-                                            />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <h3 className="text-sm font-semibold text-foreground truncate">{ech.description || "Sans description"}</h3>
-                                                {isUrgent && <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0 text-chart-3" />}
-                                                {isLate && <AlertCircle className="h-3.5 w-3.5 flex-shrink-0 text-red-500" />}
+                                            >
+                                                <Icon
+                                                    className={`h-5 w-5 ${
+                                                        isLate ? "text-red-500" : isUrgent ? "text-amber-500" : "text-primary"
+                                                    }`}
+                                                />
                                             </div>
-                                            
-                                            {/* Détails Catégorie / Sous-cat */}
-                                            <div className="mt-0.5 flex flex-col gap-0.5">
-                                                <div className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80 uppercase tracking-tighter">
-                                                    <span>{ech.categorie}</span>
-                                                    {ech.sous_categorie && (
-                                                        <>
-                                                            <span className="opacity-30">/</span>
-                                                            <span className="text-foreground/70">{ech.sous_categorie}</span>
-                                                        </>
-                                                    )}
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className="text-sm font-semibold text-foreground truncate">{ech.description || "Sans description"}</h3>
+                                                    {isUrgent && <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0 text-chart-3" />}
+                                                    {isLate && <AlertCircle className="h-3.5 w-3.5 flex-shrink-0 text-red-500" />}
                                                 </div>
-                                                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60 italic font-medium">
-                                                    <CalendarClock className="w-3 h-3 opacity-40" />
-                                                    <span>Échéance le {displayDate.toLocaleDateString('fr-FR')}</span>
+                                                
+                                                {/* Détails Catégorie / Sous-cat */}
+                                                <div className="mt-0.5 flex flex-col gap-0.5">
+                                                    <div className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80 uppercase tracking-tighter">
+                                                        <span>{ech.categorie}</span>
+                                                        {ech.sous_categorie && (
+                                                            <>
+                                                                <span className="opacity-30">/</span>
+                                                                <span className="text-foreground/70">{ech.sous_categorie}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60 italic font-medium">
+                                                        <CalendarClock className="w-3 h-3 opacity-40" />
+                                                        <span>Échéance le {displayDate.toLocaleDateString('fr-FR')}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex flex-col items-end gap-1.5 pl-2 flex-shrink-0">
-                                    <p className={`text-base font-black tracking-tighter font-serif whitespace-nowrap ${ech.type === 'revenu' ? 'text-emerald-500' : 'text-foreground'}`}>
-                                        {ech.type === 'revenu' ? '+' : '-'}{formatCurrency(ech.montant)}
-                                    </p>
-                                    <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary/10 text-[8px] font-black uppercase tracking-widest text-primary/80 border border-primary/10">
-                                            {ech.frequence}
-                                        </span>
-                                        <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[8px] font-black uppercase tracking-widest border ${
-                                            isLate 
-                                                ? "bg-rose-500/10 text-rose-500 border-rose-500/10" 
-                                                : isUrgent 
-                                                    ? "bg-amber-500/10 text-amber-500 border-amber-500/10" 
-                                                    : "bg-secondary text-muted-foreground border-border/50"
-                                        }`}>
-                                            <Clock className="h-2.5 w-2.5" />
-                                            {isLate ? "Retard" : `J-${daysLeft}`}
-                                        </span>
-                                        <button 
-                                            onClick={() => deleteRecurrence(ech.id)}
-                                            className="p-1 hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive rounded-md transition-colors ml-1"
-                                        >
-                                            <Trash2 className="w-3 h-3" />
-                                        </button>
+                                    <div className="flex flex-col items-end gap-1.5 pl-2 flex-shrink-0">
+                                        <p className={`text-base font-black tracking-tighter font-serif whitespace-nowrap ${ech.type === 'revenu' ? 'text-emerald-500' : 'text-foreground'}`}>
+                                            {ech.type === 'revenu' ? '+' : '-'}{formatCurrency(ech.montant)}
+                                        </p>
+                                        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary/10 text-[8px] font-black uppercase tracking-widest text-primary/80 border border-primary/10">
+                                                {ech.frequence}
+                                            </span>
+                                            <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[8px] font-black uppercase tracking-widest border ${
+                                                isLate 
+                                                    ? "bg-rose-500/10 text-rose-500 border-rose-500/10" 
+                                                    : isUrgent 
+                                                        ? "bg-amber-500/10 text-amber-500 border-amber-500/10" 
+                                                        : "bg-secondary text-muted-foreground border-border/50"
+                                            }`}>
+                                                <Clock className="h-2.5 w-2.5" />
+                                                {isLate ? "Retard" : `J-${daysLeft}`}
+                                            </span>
+                                            <button 
+                                                onClick={() => deleteRecurrence(ech.id)}
+                                                className="p-1 hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive rounded-md transition-colors ml-1"
+                                            >
+                                                <Trash2 className="w-3 h-3" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
+                            )
+                        } catch (err) {
+                            console.error("[EcheancesView] Render error for item:", ech, err)
+                            return <div key={ech?.id || Math.random()} className="p-2 border border-red-200 rounded text-xs text-red-500">Erreur d'affichage</div>
+                        }
                     })}
                 </div>
             </div>

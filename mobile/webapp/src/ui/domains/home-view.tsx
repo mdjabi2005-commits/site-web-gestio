@@ -77,7 +77,7 @@ export function HomeView({ onTabChange, pendingScanResult, onScanResultConsumed 
             />
             <QuickEcheanceNotif
                 open={activeNotif === 'echeance'}
-                onConfirm={() => { setActiveNotif(null) }}
+                onConfirm={() => { setActiveNotif(null); refresh() }}
                 onCancel={() => setActiveNotif(null)}
             />
             <QuickObjectifNotif

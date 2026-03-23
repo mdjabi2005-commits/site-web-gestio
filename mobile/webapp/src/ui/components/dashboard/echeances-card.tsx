@@ -4,6 +4,7 @@ import { Calendar, CreditCard, RefreshCw } from "lucide-react"
 import { useRecurrences } from "@/frontend/hooks/useRecurrences"
 
 function formatCurrency(amount: number) {
+  if (isNaN(amount) || amount === undefined || amount === null) return "0.00 €"
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -19,7 +20,13 @@ export function EcheancesCard() {
   const upcomingBills = recurrences
     .filter(r => r.statut === 'Actif' && r.prochaine_occurrence)
     .map(r => {
-        const pDate = new Date(r.prochaine_occurrence!)
+        let pDate = new Date()
+        try {
+            pDate = new Date(r.prochaine_occurrence!)
+            if (isNaN(pDate.getTime())) pDate = new Date()
+        } catch (e) {
+            pDate = new Date()
+        }
         const diffTime = pDate.getTime() - now.getTime()
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
         

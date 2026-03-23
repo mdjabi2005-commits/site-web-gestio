@@ -43,11 +43,15 @@ function getNextOccurrence(dateDebut: string, frequence: string, jour: number | 
 }
 
 export async function addRecurrence(data: Partial<Recurrence>): Promise<number | null> {
+    const nextOcc = getNextOccurrence(data.date_debut || new Date().toISOString().split('T')[0], data.frequence || 'monthly', data.jour ?? null)
+    
     await sqlBridge.execute(
-        "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, account_id, frequence, jour, date_debut, date_fin, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie ?? null, data.account_id || 1, data.frequence, data.jour ?? null, data.date_debut, data.date_fin ?? null, data.actif ?? 1]
+        "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, account_id, frequence, jour, date_debut, date_fin, actif, prochaine_occurrence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie ?? null, data.account_id || 1, data.frequence, data.jour ?? null, data.date_debut, data.date_fin ?? null, data.actif ?? 1, nextOcc]
     )
-    return 1
+    
+    const res = await sqlBridge.execute("SELECT last_insert_rowid() as id")
+    return (res[0] as any)?.id || 1
 }
 
 export async function updateRecurrence(id: number, data: Partial<Recurrence>): Promise<boolean> {
@@ -68,11 +72,26 @@ export async function backfillRecurrences(): Promise<number> {
     let count = 0
     for (const r of recurrences) {
         const nextOcc = getNextOccurrence(r.date_debut, r.frequence, r.jour)
-        await sqlBridge.execute(
-            "INSERT INTO transactions (type, montant, categorie, sous_categorie, description, date, compte_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [r.type, r.montant, r.categorie, r.sous_categorie, r.nom, nextOcc, r.account_id]
+        
+        // Vérifier si une transaction existe déjà pour cette récurrence et cette date
+        const existing = await sqlBridge.execute(
+            "SELECT id FROM transactions WHERE recurrence_id = ? AND date = ?",
+            [r.id, nextOcc]
         )
-        count++
+        
+        if (existing.length === 0) {
+            await sqlBridge.execute(
+                "INSERT INTO transactions (type, montant, categorie, sous_categorie, description, date, compte_id, recurrence_id, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [r.type, r.montant, r.categorie, r.sous_categorie, r.nom, nextOcc, r.account_id, r.id, "Automatique"]
+            )
+            
+            // Mettre à jour la prochaine occurrence dans la table récurrences
+            await sqlBridge.execute(
+                "UPDATE recurrences SET prochaine_occurrence = ? WHERE id = ?",
+                [getNextOccurrence(nextOcc, r.frequence, r.jour), r.id]
+            )
+            count++
+        }
     }
     return count
 }

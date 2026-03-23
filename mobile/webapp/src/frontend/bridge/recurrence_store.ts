@@ -47,12 +47,16 @@ class RecurrenceStore {
         return this.recurrences.length > 0 && (Date.now() - this.lastFetch < this.CACHE_TTL || this.isHydratedFromSql)
     }
 
-    async fetchFromSql(): Promise<Recurrence[]> {
-        if (this.isHydratedFromSql) return this.recurrences
-
+    async fetchFromSql() {
+        this.isHydratedFromSql = false
         console.info("[RecurrenceStore] Fetching from SQL...")
-        const query = `SELECT r.id, t.type, t.categorie, t.sous_categorie, t.montant, 
-                              t.date as date_debut, r.date_fin, r.frequence, t.description, 
+        const query = `SELECT r.id, 
+                              COALESCE(t.type, r.type) as type, 
+                              COALESCE(t.categorie, r.categorie) as categorie, 
+                              COALESCE(t.sous_categorie, r.sous_categorie) as sous_categorie, 
+                              COALESCE(t.montant, r.montant) as montant, 
+                              r.date_debut, r.date_fin, r.frequence, 
+                              COALESCE(t.description, r.nom) as description, 
                               CASE WHEN r.actif = 1 THEN 'Actif' ELSE 'Inactif' END as statut,
                               r.prochaine_occurrence, r.intervalle, r.transaction_id
                        FROM recurrences r 
@@ -94,6 +98,11 @@ class RecurrenceStore {
         return this.recurrences
     }
 
+    async forceRefresh(): Promise<Recurrence[]> {
+        this.invalidate()
+        return this.fetchFromSql()
+    }
+
     async fetchIfNeeded(): Promise<Recurrence[]> {
         if (this.recurrences.length > 0 && !this.needsPythonRefresh && this.isCacheValid()) {
             return this.recurrences
@@ -123,6 +132,8 @@ class RecurrenceStore {
             console.debug("[RecurrenceStore] addRecurrence result:", newId)
             if (newId) {
                 this.invalidate()
+                // Générer immédiatement la première transaction si nécessaire
+                await this.refreshEcheances()
                 console.debug("[RecurrenceStore] Calling fetchIfNeeded after invalidate...")
                 await this.fetchIfNeeded()
                 console.debug("[RecurrenceStore] fetchIfNeeded completed, listeners should be notified")

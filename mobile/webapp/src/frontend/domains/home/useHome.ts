@@ -52,8 +52,11 @@ export function useHome() {
         try {
             const data = await transactionStore.forceRefresh()
             setTransactions(data.map(mapToUI))
+            // Refresh recurrences too
+            const { recurrenceStore } = await import("@/frontend/bridge/recurrence_store")
+            await recurrenceStore.forceRefresh()
         } catch (err) {
-            console.error("Failed to fetch home transactions:", err)
+            console.error("Failed to fetch home data:", err)
         } finally {
             setLoading(false)
         }
