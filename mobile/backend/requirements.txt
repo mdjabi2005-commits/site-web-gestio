@@ -1,0 +1,10 @@
+numpy
+Pillow
+pyyaml
+pdfminer.six
+python-dateutil
+psutil
+pydantic
+requests
+pyjwt
+cryptography
