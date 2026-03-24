@@ -19,21 +19,26 @@ function formatCurrency(amount: number) {
   }).format(amount)
 }
 
-function getIconForCategory(category: string | undefined | null, type: string) {
-    const cat = (category || "").toLowerCase()
-    if (cat.includes("energie") || cat.includes("electri")) return Zap
-    if (cat.includes("telecom") || cat.includes("mobile") || cat.includes("téléphone")) return Smartphone
-    if (cat.includes("internet") || cat.includes("wifi")) return Wifi
-    if (cat.includes("assurance")) return Shield
-    if (cat.includes("logement") || cat.includes("loyer")) return Home
-    if (cat.includes("transport") || cat.includes("auto") || cat.includes("voiture")) return Car
-    if (cat.includes("impot") || cat.includes("tax") || cat.includes("étude")) return GraduationCap
-    if (cat.includes("banque") || cat.includes("credit") || cat.includes("crédit")) return CreditCard
-    if (cat.includes("aliment") || cat.includes("food") || cat.includes("course")) return Utensils
-    if (cat.includes("loisir") || cat.includes("cafe") || cat.includes("café") || cat.includes("restau")) return Gamepad2
-    if (cat.includes("achat") || cat.includes("shopping")) return ShoppingCart
-    if (cat.includes("santé") || cat.includes("sante") || cat.includes("médic")) return Heart
-    return type === "revenu" ? RefreshCw : CalendarClock
+// VERSION: 2026.03.24.1545 - FIXING NULL CATEGORY CRASH
+function getIconForCategory(category: any, type: any) {
+    try {
+        const cat = String(category || "").toLowerCase()
+        if (cat.includes("energie") || cat.includes("electri")) return Zap
+        if (cat.includes("telecom") || cat.includes("mobile") || cat.includes("téléphone")) return Smartphone
+        if (cat.includes("internet") || cat.includes("wifi")) return Wifi
+        if (cat.includes("assurance")) return Shield
+        if (cat.includes("logement") || cat.includes("loyer")) return Home
+        if (cat.includes("transport") || cat.includes("auto") || cat.includes("voiture")) return Car
+        if (cat.includes("impot") || cat.includes("tax") || cat.includes("étude")) return GraduationCap
+        if (cat.includes("banque") || cat.includes("credit") || cat.includes("crédit")) return CreditCard
+        if (cat.includes("aliment") || cat.includes("food") || cat.includes("course")) return Utensils
+        if (cat.includes("loisir") || cat.includes("cafe") || cat.includes("café") || cat.includes("restau")) return Gamepad2
+        if (cat.includes("achat") || cat.includes("shopping")) return ShoppingCart
+        if (cat.includes("santé") || cat.includes("sante") || cat.includes("médic")) return Heart
+    } catch (e) {
+        console.warn("[EcheancesView] Icon resolution failed:", e)
+    }
+    return (String(type).toLowerCase() === "revenu") ? RefreshCw : CalendarClock
 }
 
 const filterOptions: { label: string; value: string }[] = [
@@ -47,8 +52,8 @@ export function EcheancesView() {
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [activeFilter, setActiveFilter] = useState("all")
 
-    const activeRecurrences = recurrences.filter(r => r.statut === 'Actif')
-    const filtered = activeFilter === "all" ? activeRecurrences : activeRecurrences.filter((r) => r.type === activeFilter)
+    const activeRecurrences = Array.isArray(recurrences) ? recurrences.filter(r => r && r.statut === 'Actif') : []
+    const filtered = activeFilter === "all" ? activeRecurrences : activeRecurrences.filter((r) => r && r.type === activeFilter)
 
     const totalExpenses = activeRecurrences.filter(r => r.type === 'dépense').reduce((sum, r) => sum + r.montant, 0)
     const totalIncomes = activeRecurrences.filter(r => r.type === 'revenu').reduce((sum, r) => sum + r.montant, 0)

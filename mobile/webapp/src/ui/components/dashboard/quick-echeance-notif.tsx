@@ -77,7 +77,7 @@ export function QuickEcheanceNotif({ open, onConfirm, onCancel }: QuickEcheanceN
                 frequence: data.frequence,
                 date_debut: data.date_debut,
                 actif: 1,
-                account_id: 1
+                compte_id: 1
             }) !== null
             if (success) { onConfirm() }
         } catch (err) {

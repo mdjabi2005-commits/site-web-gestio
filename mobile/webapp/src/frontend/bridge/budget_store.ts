@@ -106,7 +106,7 @@ class BudgetStore {
                         categorie: b.categorie,
                         montant_limite: b.montant_limite,
                         periode: b.periode,
-                        account_id: b.account_id || 1,
+                        compte_id: b.compte_id || 1,
                         date_debut: b.date_debut,
                         date_fin: b.date_fin,
                         alert_seuil: b.alert_seuil,

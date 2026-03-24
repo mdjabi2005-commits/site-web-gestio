@@ -8,7 +8,7 @@ export interface Budget {
     categorie: string
     montant_limite: number
     periode: string
-    account_id: number
+    compte_id: number
     date_debut?: string
     date_fin?: string | null
     alert_seuil?: number | null
@@ -38,8 +38,8 @@ export async function getBudgets(): Promise<Budget[]> {
 
 export async function addBudget(data: Partial<Budget>): Promise<number | null> {
     await sqlBridge.execute(
-        "INSERT INTO budgets (categorie, montant, montant_limite, periode, account_id, date_debut, date_fin, alert_seuil, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [data.categorie, data.montant_limite, data.montant_limite, data.periode || "monthly", data.account_id || 1, data.date_debut || null, data.date_fin || null, data.alert_seuil || null, data.actif ?? 1]
+        "INSERT INTO budgets (categorie, montant, montant_limite, periode, compte_id, date_debut, date_fin, alert_seuil, actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [data.categorie, data.montant_limite, data.montant_limite, data.periode || "monthly", data.compte_id || 1, data.date_debut || null, data.date_fin || null, data.alert_seuil || null, data.actif ?? 1]
     )
     return 1
 }

@@ -58,7 +58,8 @@ class RecurrenceStore {
                               r.date_debut, r.date_fin, r.frequence, 
                               COALESCE(t.description, r.nom) as description, 
                               CASE WHEN r.actif = 1 THEN 'Actif' ELSE 'Inactif' END as statut,
-                              r.prochaine_occurrence, r.intervalle, r.transaction_id
+                              r.prochaine_occurrence, r.intervalle, r.transaction_id,
+                              r.compte_id
                        FROM recurrences r 
                        LEFT JOIN transactions t ON r.transaction_id = t.id 
                        ORDER BY r.prochaine_occurrence ASC`
@@ -80,7 +81,8 @@ class RecurrenceStore {
                     statut: r.statut,
                     prochaine_occurrence: r.prochaine_occurrence,
                     intervalle: r.intervalle,
-                    transaction_id: r.transaction_id
+                    transaction_id: r.transaction_id,
+                    compte_id: r.compte_id
                 })) as any[]
                 
                 this.setRecurrences(mapped)

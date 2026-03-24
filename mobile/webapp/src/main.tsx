@@ -14,7 +14,10 @@ import '@fontsource/instrument-serif/400-italic.css';
 import './index.css'
 import App from './App.tsx'
 
+console.log('[App] Version: 2026.03.24.1545')
+
 // ── Service Worker Registration (Phase 4 — Offline) ──────────
+/* DISABLE SW FOR DEV TO AVOID CACHING ISSUES
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -23,6 +26,7 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.error('[SW] Registration failed:', err))
   })
 }
+*/
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

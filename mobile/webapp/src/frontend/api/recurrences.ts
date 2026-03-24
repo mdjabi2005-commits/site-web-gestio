@@ -11,7 +11,7 @@ export interface Recurrence {
     type: string
     categorie: string
     sous_categorie: string | null
-    account_id: number
+    compte_id: number
     frequence: string
     jour: number | null
     date_debut: string
@@ -46,8 +46,8 @@ export async function addRecurrence(data: Partial<Recurrence>): Promise<number |
     const nextOcc = getNextOccurrence(data.date_debut || new Date().toISOString().split('T')[0], data.frequence || 'monthly', data.jour ?? null)
     
     await sqlBridge.execute(
-        "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, account_id, frequence, jour, date_debut, date_fin, actif, prochaine_occurrence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie ?? null, data.account_id || 1, data.frequence, data.jour ?? null, data.date_debut, data.date_fin ?? null, data.actif ?? 1, nextOcc]
+        "INSERT INTO recurrences (nom, montant, type, categorie, sous_categorie, compte_id, frequence, jour, date_debut, date_fin, actif, prochaine_occurrence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [data.nom, data.montant, data.type || "dépense", data.categorie, data.sous_categorie ?? null, data.compte_id || 1, data.frequence, data.jour ?? null, data.date_debut, data.date_fin ?? null, data.actif ?? 1, nextOcc]
     )
     
     const res = await sqlBridge.execute("SELECT last_insert_rowid() as id")
@@ -82,7 +82,7 @@ export async function backfillRecurrences(): Promise<number> {
         if (existing.length === 0) {
             await sqlBridge.execute(
                 "INSERT INTO transactions (type, montant, categorie, sous_categorie, description, date, compte_id, recurrence_id, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [r.type, r.montant, r.categorie, r.sous_categorie, r.nom, nextOcc, r.account_id, r.id, "Automatique"]
+                [r.type, r.montant, r.categorie, r.sous_categorie, r.nom, nextOcc, r.compte_id, r.id, "Automatique"]
             )
             
             // Mettre à jour la prochaine occurrence dans la table récurrences

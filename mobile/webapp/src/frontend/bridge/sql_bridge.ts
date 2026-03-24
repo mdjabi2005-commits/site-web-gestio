@@ -79,6 +79,7 @@ class SqlBridge {
                 date TEXT NOT NULL,
                 compte_id INTEGER DEFAULT 1,
                 recurrence_id INTEGER,
+                source TEXT DEFAULT 'Manuel',
                 created_at TEXT DEFAULT (datetime('now')),
                 updated_at TEXT DEFAULT (datetime('now'))
             )
@@ -92,7 +93,7 @@ class SqlBridge {
                 type TEXT NOT NULL,
                 categorie TEXT,
                 sous_categorie TEXT,
-                account_id INTEGER DEFAULT 1,
+                compte_id INTEGER DEFAULT 1,
                 frequence TEXT NOT NULL,
                 jour INTEGER,
                 date_debut TEXT NOT NULL,
@@ -114,7 +115,7 @@ class SqlBridge {
                 montant REAL NOT NULL,
                 montant_limite REAL NOT NULL,
                 periode TEXT NOT NULL DEFAULT 'monthly',
-                account_id INTEGER DEFAULT 1,
+                compte_id INTEGER DEFAULT 1,
                 date_debut TEXT,
                 date_fin TEXT,
                 alert_seuil REAL,
@@ -175,25 +176,46 @@ class SqlBridge {
     private async runMigrations(): Promise<void> {
         if (!this.db) return
         try {
-            const columnsInfo = this.db.exec("PRAGMA table_info(transactions)")
-            if (columnsInfo.length > 0 && columnsInfo[0].values) {
-                const columns = columnsInfo[0].values.map((col: any) => col[1] as string)
-                if (columns.includes("account_id") && !columns.includes("compte_id")) {
+            // 1. Transactions migrations
+            const transInfo = this.db.exec("PRAGMA table_info(transactions)")
+            if (transInfo.length > 0 && transInfo[0].values) {
+                const cols = transInfo[0].values.map((col: any) => col[1] as string)
+                
+                if (cols.includes("account_id") && !cols.includes("compte_id")) {
                     console.log("[SqlBridge] Migrating transactions.account_id to compte_id...")
                     this.db.run("ALTER TABLE transactions RENAME COLUMN account_id TO compte_id")
-                    await this.saveToIndexedDB()
                 }
-                if (!columns.includes("source")) {
+                if (!cols.includes("source")) {
                     console.log("[SqlBridge] Migrating transactions: adding source column...")
                     this.db.run("ALTER TABLE transactions ADD COLUMN source TEXT DEFAULT 'Manuel'")
-                    await this.saveToIndexedDB()
                 }
-                if (columns.includes("recurrence") && !columns.includes("recurrence_id")) {
+                if (cols.includes("recurrence") && !cols.includes("recurrence_id")) {
                     console.log("[SqlBridge] Migrating transactions: renaming recurrence to recurrence_id...")
                     this.db.run("ALTER TABLE transactions RENAME COLUMN recurrence TO recurrence_id")
-                    await this.saveToIndexedDB()
                 }
             }
+
+            // 2. Recurrences migrations
+            const recInfo = this.db.exec("PRAGMA table_info(recurrences)")
+            if (recInfo.length > 0 && recInfo[0].values) {
+                const cols = recInfo[0].values.map((col: any) => col[1] as string)
+                if (cols.includes("account_id") && !cols.includes("compte_id")) {
+                    console.log("[SqlBridge] Migrating recurrences.account_id to compte_id...")
+                    this.db.run("ALTER TABLE recurrences RENAME COLUMN account_id TO compte_id")
+                }
+            }
+
+            // 3. Budgets migrations
+            const budInfo = this.db.exec("PRAGMA table_info(budgets)")
+            if (budInfo.length > 0 && budInfo[0].values) {
+                const cols = budInfo[0].values.map((col: any) => col[1] as string)
+                if (cols.includes("account_id") && !cols.includes("compte_id")) {
+                    console.log("[SqlBridge] Migrating budgets.account_id to compte_id...")
+                    this.db.run("ALTER TABLE budgets RENAME COLUMN account_id TO compte_id")
+                }
+            }
+
+            await this.saveToIndexedDB()
         } catch (e) {
             console.warn("[SqlBridge] Migration failed (ignored):", e)
         }
