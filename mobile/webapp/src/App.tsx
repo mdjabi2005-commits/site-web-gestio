@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { MobileNav } from "./ui/components/dashboard/mobile-nav"
-import { PwaInstallPrompt } from "./ui/components/pwa-install-prompt"
+import { ApkInstallPrompt } from "./ui/components/apk-install-prompt"
 import type { TabId } from "@/ui/types"
 import { HomeView } from "./ui/domains/home-view"
 import { TransactionsView } from "./ui/domains/transactions-view"
@@ -135,14 +135,7 @@ function App() {
       case "comptes": return <ComptesView />
       case "analytics": return <AnalyticsView />
       case "settings": return <SettingsView />
-      case "scan": return (
-        <ScanView
-          onScanResult={(result) => {
-            setPendingScanResult(result)
-            setActiveTab("home")
-          }}
-        />
-      )
+      case "scan": return <ScanView />
       default: return <HomeView onTabChange={setActiveTab} pendingScanResult={null} onScanResultConsumed={() => {}} />
     }
   }
@@ -163,7 +156,7 @@ function App() {
 
       {isInitializing && <GlobalLoadingState detail={isFirstLaunch ? "Première installation : Préparation du moteur..." : undefined} />}
       {!isInitializing && <PyodideBackgroundStatus />}
-      <PwaInstallPrompt />
+      <ApkInstallPrompt />
 
       <main className="max-w-md mx-auto">
         {renderView()}
