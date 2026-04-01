@@ -32,7 +32,7 @@ const DownloadSection = () => (
               <p className="text-muted-foreground text-sm">Windows 10/11 (64-bit) — Installeur .exe</p>
             </div>
             <a
-              href="https://github.com/mdjabi2005-commits/gestio/releases/download/v1.0.4/Gestio-Setup-v1.0.4.exe"
+              href="https://github.com/mdjabi2005-commits/gestio/releases/latest/download/Gestio-Setup-v1.0.4.exe"
               className="inline-flex items-center justify-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-3 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline flex-shrink-0"
             >
               <Download className="w-4 h-4" />
@@ -64,7 +64,7 @@ const DownloadSection = () => (
             </div>
             <div className="flex-shrink-0 flex gap-3">
               <a
-                href="https://github.com/mdjabi2005-commits/gestio/releases/download/v1.0.4/install-mac-linux.sh"
+                href="https://github.com/mdjabi2005-commits/gestio/releases/latest/download/Gestio-Universal.zip"
                 className="inline-flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 py-3 rounded-xl font-semibold hover:bg-muted hover:border-primary transition-all no-underline"
               >
                 <Terminal className="w-4 h-4" />
@@ -83,10 +83,14 @@ const DownloadSection = () => (
             Comment installer sur macOS / Linux
           </h4>
           <div className="bg-background rounded-lg p-4 font-mono text-sm">
-            <p className="text-muted-foreground mb-2">1. Ouvrez un terminal</p>
-            <p className="text-muted-foreground mb-2">2. Téléchargez et lancez le script :</p>
+            <p className="text-muted-foreground mb-2">1. Téléchargez le fichier Gestio-Universal.zip</p>
+            <p className="text-muted-foreground mb-2">2. Décompressez l'archive :</p>
             <code className="text-primary block bg-primary/10 px-3 py-2 rounded mt-2">
-              curl -sSL https://raw.githubusercontent.com/mdjabi2005-commits/gestio/v1.0.4/install-mac-linux.sh | bash
+              unzip Gestio-Universal.zip && cd release-universal
+            </code>
+            <p className="text-muted-foreground mt-3 mb-2">3. Lancez le script d'installation :</p>
+            <code className="text-primary block bg-primary/10 px-3 py-2 rounded">
+              bash launcher.sh
             </code>
             <p className="text-muted-foreground mt-3">
               Le script installe automatiquement <strong className="text-foreground">uv</strong> et Gestio.
