@@ -1,7 +1,7 @@
 import Reveal from "./Reveal";
-import screenshot1 from "@/assets/app_screenshot_1.png";
-import screenshot2 from "@/assets/app_screenshot_2.png";
-import privacyVisual from "@/assets/privacy_visual.png";
+import screenshot1 from "@/assets/app_desktop_1.png";
+import screenshot2 from "@/assets/app_desktop_2.png";
+import screenshot3 from "@/assets/app_desktop_3.png";
 
 const ScreenshotsSection = () => (
   <section className="py-[120px] bg-background" id="captures">
@@ -27,7 +27,7 @@ const ScreenshotsSection = () => (
               <img src={screenshot2} alt="Détail des transactions" className="w-full block" loading="lazy" />
             </div>
             <div className="rounded-xl overflow-hidden border border-border transition-all hover:border-primary hover:scale-[1.02]">
-              <img src={privacyVisual} alt="Import OCR" className="w-full block" loading="lazy" />
+              <img src={screenshot3} alt="Import OCR" className="w-full block" loading="lazy" />
             </div>
           </div>
         </div>

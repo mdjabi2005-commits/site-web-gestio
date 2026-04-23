@@ -11,8 +11,8 @@ const services = [
   {
     icon: Smartphone,
     title: "Création Application Mobile",
-    desc: "Applications mobiles hybrides avec React Native ou PWA. Synchronisation offline, interface intuitive et sécurisée pour vos projets.",
-    platforms: ["Android", "iOS", "PWA"],
+    desc: "Applications mobiles avec APK Android. Synchronisation offline, interface intuitive et sécurisée pour vos projets.",
+    platforms: ["Android", "iOS"],
   },
 ];
 

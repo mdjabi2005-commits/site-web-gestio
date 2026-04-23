@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { ShieldCheck, Download, X } from "lucide-react"
+import { ShieldCheck, Download, X, Smartphone } from "lucide-react"
 
 export function ApkInstallPrompt() {
   const [isVisible, setIsVisible] = useState(false)
@@ -16,12 +16,8 @@ export function ApkInstallPrompt() {
     const isDismissed = localStorage.getItem("apk_prompt_dismissed")
     if (isDismissed) return
 
-    // Attendre 5 minutes (300 000 ms) avant de proposer l'installation
-    const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 300000)
-
-    return () => clearTimeout(timer)
+    // Afficher immédiatement la proposition d'installation
+    setIsVisible(true)
   }, [])
 
   const handleDismiss = () => {
@@ -51,28 +47,33 @@ export function ApkInstallPrompt() {
           </div>
           
           <div className="flex-1 pr-4">
-            <h3 className="font-bold text-base mb-1">Passer à l'application Native</h3>
+            <h3 className="font-bold text-base mb-1">L'application vous plait ?</h3>
             <p className="text-sm text-indigo-100 leading-relaxed">
-              Pour une meilleure stabilité et la sauvegarde permanente de vos données, installez l'application Android (APK).
+              Installez l'APK pour en profiter à tout instant et sauvegarder vos données en permanence.
             </p>
             <p className="text-[11px] mt-2 text-indigo-200 italic">
               Code open-source et sécurisé sur GitHub.
             </p>
             
             <div className="flex gap-3 mt-4">
-              <a 
-                href="https://github.com/mdjabi2005-commits/gestio-mobile/releases/latest/download/gestio-mobile-latest.apk"
+              <a
+                href="https://gestio.software/mobile"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex-1 bg-white text-indigo-700 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-indigo-50 active:scale-95 transition-all shadow-lg"
               >
-                <Download className="w-4 h-4" />
-                Installer l'APK
+                <Smartphone className="w-4 h-4" />
+                Découvrir
               </a>
-              <button 
-                onClick={handleDismiss}
-                className="px-4 py-2.5 bg-indigo-500/30 text-white rounded-xl font-medium text-sm hover:bg-indigo-500/50 transition-all font-semibold"
+              <a
+                href="https://github.com/mdjabi2005-commits/gestio-mobile/releases/latest/download/gestio-mobile-latest.apk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-indigo-500 text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-indigo-600 active:scale-95 transition-all shadow-lg"
               >
-                Plus tard
-              </button>
+                <Download className="w-4 h-4" />
+                Installer APK
+              </a>
             </div>
           </div>
         </div>

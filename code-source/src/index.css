@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Work+Sans:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
 @layer base {
   :root {
@@ -44,6 +44,9 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 19% 27%;
     --sidebar-ring: 160 84% 39%;
+
+    --cta: 25 95% 53%;
+    --cta-foreground: 0 0% 100%;
   }
 }
 
@@ -58,7 +61,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Outfit', 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
@@ -71,6 +74,10 @@
 
   .bg-gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+
+  .bg-gradient-cta {
+    background: linear-gradient(135deg, hsl(var(--cta)) 0%, hsl(25 95% 45%) 100%);
   }
 
   .bg-gradient-subtle {
@@ -87,6 +94,14 @@
 
   .shadow-primary-hover {
     box-shadow: 0 8px 32px hsl(160 84% 39% / 0.4);
+  }
+
+  .shadow-cta {
+    box-shadow: 0 4px 16px hsl(25 95% 53% / 0.3);
+  }
+
+  .shadow-cta-hover {
+    box-shadow: 0 8px 32px hsl(25 95% 53% / 0.4);
   }
 
   .glass-nav {

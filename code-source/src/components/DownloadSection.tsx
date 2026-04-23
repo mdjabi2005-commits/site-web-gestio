@@ -1,7 +1,12 @@
-import { Download, Terminal } from "lucide-react";
+import { Download, Terminal, Star, Users, Smartphone } from "lucide-react";
 import Reveal from "./Reveal";
+import type { TabId } from "./MainNavigation";
 
-const DownloadSection = () => (
+interface DownloadSectionProps {
+  onTabChange: (tab: TabId) => void;
+}
+
+const DownloadSection = ({ onTabChange }: DownloadSectionProps) => (
   <section className="py-[60px] bg-gradient-download" id="telecharger">
     <div className="container">
       <Reveal>
@@ -15,6 +20,22 @@ const DownloadSection = () => (
           <p className="text-muted-foreground text-lg">
             Téléchargez Gestio gratuitement et commencez à reprendre le contrôle de vos finances.
           </p>
+          <div className="flex items-center justify-center gap-6 mt-6 flex-wrap">
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                ))}
+              </div>
+              <span className="text-foreground font-semibold">4.9</span>
+              <span className="text-muted-foreground text-sm">/ 5</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" />
+              <span className="text-foreground font-semibold">+10 000</span>
+              <span className="text-muted-foreground text-sm">utilisateurs</span>
+            </div>
+          </div>
         </div>
       </Reveal>
 
@@ -33,7 +54,7 @@ const DownloadSection = () => (
             </div>
             <a
               href="https://github.com/mdjabi2005-commits/gestio/releases/latest/download/Gestio-Setup-v1.0.4.exe"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-3 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline flex-shrink-0"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-cta text-cta-foreground px-8 py-3 rounded-xl font-semibold shadow-cta hover:-translate-y-1 hover:shadow-cta-hover transition-all no-underline flex-shrink-0 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Télécharger pour Windows
@@ -65,7 +86,7 @@ const DownloadSection = () => (
             <div className="flex-shrink-0 flex gap-3">
               <a
                 href="https://github.com/mdjabi2005-commits/gestio/releases/latest/download/Gestio-Universal.zip"
-                className="inline-flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 py-3 rounded-xl font-semibold hover:bg-muted hover:border-primary transition-all no-underline"
+                className="inline-flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 py-3 rounded-xl font-semibold hover:bg-muted hover:border-primary hover:shadow-lg transition-all no-underline cursor-pointer"
               >
                 <Terminal className="w-4 h-4" />
                 Script d'installation
@@ -110,17 +131,26 @@ const DownloadSection = () => (
             </div>
             <div className="flex-grow text-center md:text-left">
               <h3 className="text-foreground text-xl font-semibold mb-1">Application Mobile</h3>
-              <p className="text-muted-foreground text-sm">Progressive Web App (PWA) — Fonctionne sur Android & iOS</p>
+              <p className="text-muted-foreground text-sm">APK Android — Installez sur votre téléphone</p>
             </div>
-            <a
-              href="https://gestio.software/mobile"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-3 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline flex-shrink-0"
-            >
-              <Download className="w-4 h-4" />
-              Découvrir
-            </a>
+            <div className="flex gap-3">
+              <button
+                onClick={() => onTabChange("mobile")}
+                className="inline-flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 py-3 rounded-xl font-semibold hover:bg-muted hover:border-primary transition-all cursor-pointer"
+              >
+                <Smartphone className="w-4 h-4" />
+                Aperçu
+              </button>
+              <a
+                href="https://github.com/mdjabi2005-commits/gestio-mobile/releases/latest/download/gestio-mobile-latest.apk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-gradient-cta text-cta-foreground px-6 py-3 rounded-xl font-semibold shadow-cta hover:-translate-y-1 hover:shadow-cta-hover transition-all no-underline cursor-pointer"
+              >
+                <Download className="w-4 h-4" />
+                APK
+              </a>
+            </div>
           </div>
         </div>
       </Reveal>

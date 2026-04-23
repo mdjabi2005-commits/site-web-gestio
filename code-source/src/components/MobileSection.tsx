@@ -1,11 +1,11 @@
-import { Smartphone, Zap, Wifi, Shield } from "lucide-react";
+import { Smartphone, Zap, Wifi, Shield, Download } from "lucide-react";
 import Reveal from "./Reveal";
-import mobileScreenshot1 from "@/assets/Screenshot_20260321_093256.png";
-import mobileScreenshot2 from "@/assets/Screenshot_20260321_093321.png";
+import mobileScreenshot1 from "@/assets/app_mobile_1.png";
+import mobileScreenshot2 from "@/assets/app_mobile_2.png";
 
 const features = [
   { icon: Smartphone, title: "Interface adaptée", desc: "Design responsive optimisé pour smartphones et tablettes." },
-  { icon: Zap, title: "Installation rapide", desc: "Progressive Web App (PWA) - installez directement depuis votre navigateur." },
+  { icon: Zap, title: "Installation rapide", desc: "Application APK légère - installez en quelques secondes." },
   { icon: Wifi, title: "Fonctionne hors-ligne", desc: "Accédez à vos données sans connexion internet." },
   { icon: Shield, title: "Données sécurisées", desc: "Chiffrement local - vos finances restent sur votre appareil." },
 ];
@@ -24,15 +24,26 @@ const MobileSection = () => (
           <p className="text-muted-foreground text-lg">
             Emportez vos finances partout avec vous. L'application mobile Gestio offre la même expérience complète que la version desktop.
           </p>
-          <a
-            href="https://gestio.software/mobile"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline mt-6"
-          >
-            <Smartphone className="w-5 h-5" />
-            Ouvrir l'application mobile
-          </a>
+          <div className="flex flex-wrap gap-4 justify-center mt-6">
+            <a
+              href="https://gestio.software/mobile"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold shadow-primary hover:-translate-y-1 hover:shadow-primary-hover transition-all no-underline cursor-pointer"
+            >
+              <Smartphone className="w-5 h-5" />
+              Découvrir
+            </a>
+            <a
+              href="https://github.com/mdjabi2005-commits/gestio-mobile/releases/latest/download/gestio-mobile-latest.apk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-cta text-cta-foreground px-8 py-4 rounded-xl font-semibold shadow-cta hover:-translate-y-1 hover:shadow-cta-hover transition-all no-underline cursor-pointer"
+            >
+              <Download className="w-5 h-5" />
+              Installer l'APK
+            </a>
+          </div>
         </div>
       </Reveal>
 
@@ -67,57 +78,6 @@ const MobileSection = () => (
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="bg-gradient-primary/10 border border-primary/20 rounded-2xl p-6 mt-4">
-            <h3 className="text-foreground text-xl font-semibold mb-6 text-center">
-              Comment installer Gestio sur votre téléphone ?
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-card/80 rounded-xl p-5 border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">📱</span>
-                  <h4 className="text-foreground text-lg font-semibold">iPhone / iPad</h4>
-                  <span className="text-xs text-muted-foreground ml-auto">(Safari)</span>
-                </div>
-                <ol className="space-y-3">
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">1</span>
-                    <p className="text-muted-foreground text-sm">Appuyez sur le bouton <strong className="text-foreground">Partager</strong> (carré avec flèche vers le haut)</p>
-                  </li>
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">2</span>
-                    <p className="text-muted-foreground text-sm">Faites défiler et sélectionnez <strong className="text-foreground">« Sur l'écran d'accueil »</strong></p>
-                  </li>
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">3</span>
-                    <p className="text-muted-foreground text-sm">Appuyez sur <strong className="text-foreground">« Ajouter »</strong> en haut à droite</p>
-                  </li>
-                </ol>
-              </div>
-
-              <div className="bg-card/80 rounded-xl p-5 border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🤖</span>
-                  <h4 className="text-foreground text-lg font-semibold">Android</h4>
-                  <span className="text-xs text-muted-foreground ml-auto">(Chrome)</span>
-                </div>
-                <ol className="space-y-3">
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">1</span>
-                    <p className="text-muted-foreground text-sm">Appuyez sur le <strong className="text-foreground">menu</strong> (3 points en haut à droite)</p>
-                  </li>
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">2</span>
-                    <p className="text-muted-foreground text-sm">Sélectionnez <strong className="text-foreground">« Ajouter à l'écran d'accueil »</strong> ou <strong className="text-foreground">« Installer l'application »</strong></p>
-                  </li>
-                  <li className="flex gap-3 items-start">
-                    <span className="bg-primary/20 text-primary text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">3</span>
-                    <p className="text-muted-foreground text-sm">Appuyez sur <strong className="text-foreground">« Ajouter »</strong> ou <strong className="text-foreground">« Installer »</strong></p>
-                  </li>
-                </ol>
-              </div>
-            </div>
           </div>
         </Reveal>
       </div>

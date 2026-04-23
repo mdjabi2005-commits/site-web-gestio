@@ -30,7 +30,7 @@ const FeaturesSection = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((f, i) => (
           <Reveal key={f.title} delay={i * 100}>
-            <div className="bg-card border border-border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:border-primary hover:shadow-[0_24px_48px_rgba(0,0,0,0.3)] h-full">
+            <div className="bg-card border border-border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:border-primary hover:shadow-[0_24px_48px_rgba(0,0,0,0.3)] h-full cursor-pointer">
               <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-5">
                 <f.icon className="w-7 h-7 text-primary" />
               </div>
