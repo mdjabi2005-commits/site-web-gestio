@@ -108,4 +108,20 @@
     background: hsl(222 47% 11% / 0.9);
     backdrop-filter: blur(20px);
   }
+
+  .legal-content h2 {
+    @apply mt-10 mb-3 text-xl font-semibold text-foreground;
+  }
+
+  .legal-content h2:first-child {
+    @apply mt-0;
+  }
+
+  .legal-content p {
+    @apply mb-4 leading-7 text-muted-foreground;
+  }
+
+  .legal-content a {
+    @apply text-primary underline underline-offset-4 transition-colors hover:text-foreground;
+  }
 }

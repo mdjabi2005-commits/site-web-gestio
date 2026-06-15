@@ -4,8 +4,8 @@ import privacyVisual from "@/assets/privacy_visual.png";
 
 const negatives = [
   "Pas de création de compte",
-  "Pas de données envoyées vers des serveurs",
-  "Pas de tracking ou analytics",
+  "Pas de transmission bancaire sans autorisation explicite",
+  "Pas de suivi publicitaire",
 ];
 
 const positives = [

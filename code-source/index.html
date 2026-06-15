@@ -4,28 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestio - Vos finances, vos données, votre contrôle</title>
-    <meta name="description" content="Gestio est une application gratuite de gestion de finances personnelles. 100% hors-ligne, sans compte, vos données restent sur votre ordinateur." />
+    <meta name="description" content="Gestio est une application gratuite de gestion de finances personnelles, locale par défaut, avec connexion bancaire facultative." />
     <meta name="author" content="Lamom's" />
     <meta property="og:title" content="Gestio - Gestion de finances personnelles" />
-    <meta property="og:description" content="Application gratuite de gestion de finances personnelles. 100% hors-ligne, vos données restent sur votre ordinateur." />
+    <meta property="og:description" content="Application gratuite de gestion de finances personnelles, locale par défaut et respectueuse de vos données." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:image" content="/logo.png" />
     <meta name="twitter:image" content="/logo.png" />
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PQCR4HPT');</script>
-    <!-- End Google Tag Manager -->
+    <script>
+      (function (location) {
+        if (location.search[1] === "/") {
+          var decoded = location.search.slice(1).split("&").map(function (part) {
+            return part.replace(/~and~/g, "&");
+          }).join("?");
+          window.history.replaceState(null, "", location.pathname.slice(0, -1) + decoded + location.hash);
+        }
+      })(window.location);
+    </script>
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQCR4HPT"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -31,7 +31,7 @@ export function MainNavigation({ activeTab, onTabChange }: MainNavigationProps) 
       <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border">
         <div className="container">
           <div className="flex items-center justify-between h-[72px]">
-            <a href="#" className="flex items-center gap-3 text-2xl font-bold text-foreground no-underline">
+            <a href="/" className="flex items-center gap-3 text-2xl font-bold text-foreground no-underline">
               <GestioLogo />
               Gestio
             </a>
