@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.gestio.app",
+      "sha256_cert_fingerprints": [
+        "A6:B1:CB:CF:60:2F:EC:6E:8A:C5:17:32:A4:08:10:89:55:02:C6:2A:2B:2C:F0:7A:3C:4A:3F:7F:81:90:B4:FC"
+      ]
+    }
+  }
+]
